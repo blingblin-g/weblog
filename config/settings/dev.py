@@ -4,7 +4,7 @@ from .base import *
 DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-r-=-crjui7r1n&3p_l$7dbjalk!l=!jzw#3()h!6&p(#h(h-u#"
+SECRET_KEY = "django-insecure-r&d+tij1-*5f(qol9*0l3m$8(!$##aqgge!7v87bzw)tft_#r6"
 
 # SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = ["*"]
