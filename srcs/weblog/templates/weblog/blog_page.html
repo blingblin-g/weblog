@@ -4,11 +4,76 @@
 {% block title %}{{ page.title }}{% endblock %}
 
 {% block content %}
+<style>
+    .cover-container {
+        position: relative;
+        height: 24rem;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    .cover-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.3);
+        transition: all 0.7s ease-in-out;
+    }
+    .cover-container:hover .cover-image {
+        transform: scale(1.1);
+        filter: brightness(1);
+    }
+    .cover-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.4));
+        transition: all 0.7s ease-in-out;
+    }
+    .cover-container:hover .cover-overlay {
+        background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+    .modal.active {
+        display: flex;
+        opacity: 1;
+    }
+    .modal-content {
+        max-width: 90%;
+        max-height: 90vh;
+        margin: auto;
+        position: relative;
+    }
+    .modal-image {
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+    }
+    .modal-close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        color: white;
+        font-size: 30px;
+        cursor: pointer;
+        padding: 5px;
+    }
+</style>
+
 <div class="bg-white">
     {% if page.cover_image %}
-    <div class="relative h-96 overflow-hidden">
-        {% image page.cover_image fill-1920x1080 class="w-full h-full object-cover" style="filter: brightness(0.3);" %}
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/40"></div>
+    <div class="cover-container" onclick="openModal()">
+        {% image page.cover_image fill-1920x1080 class="cover-image" %}
+        <div class="cover-overlay"></div>
         <div class="absolute inset-0 flex items-center justify-center">
             <div class="text-center max-w-3xl mx-auto px-4">
                 <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl mb-16">
@@ -20,6 +85,33 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            {% image page.cover_image original class="modal-image" %}
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('imageModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
     {% else %}
     <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto max-w-2xl">
@@ -45,7 +137,9 @@
             </p>
             <div class="mt-12 max-w-2xl prose prose-lg prose-gray prose-img:rounded-xl prose-img:shadow-lg">
                 {% for block in page.body %}
-                    {% if block.block_type == 'paragraph' %}
+                    {% if block.block_type == 'markdown' %}
+                        {{ block.value|markdown_to_html|safe }}
+                    {% elif block.block_type == 'paragraph' %}
                         {{ block.value|richtext }}
                     {% elif block.block_type == 'image' %}
                         {% image block.value width-800 class="rounded-xl shadow-lg" %}

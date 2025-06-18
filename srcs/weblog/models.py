@@ -23,8 +23,8 @@ class BlogPage(Page):
         on_delete=models.SET_NULL,
         related_name='+',
     )
-    body_markdown = models.TextField(blank=True)
     body = StreamField([
+        ('markdown', blocks.TextBlock(help_text='Markdown text')),
         ('paragraph', blocks.RichTextBlock()),
         ('image', ImageChooserBlock()),
     ], use_json_field=True, blank=True, null=True)
@@ -33,6 +33,5 @@ class BlogPage(Page):
         FieldPanel('date'),
         FieldPanel('intro'),
         FieldPanel('cover_image'),
-        FieldPanel('body_markdown'),
         FieldPanel('body'),
     ] 
