@@ -1,43 +1,34 @@
+version: '3.8'
+
 services:
   web:
-    build: .
-    command: sh /app/srcs/config/db/init.sh
+    container_name: weblog_web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python srcs/manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./srcs:/app/srcs
-      - static_volume:/app/srcs/static
-      - media_volume:/app/srcs/media
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
     ports:
       - "8000:8000"
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.dev
-      - PYTHONPATH=/app/srcs
-      - DJANGO_SUPERUSER_PASSWORD=admin
-      - DJANGO_SUPERUSER_USERNAME=admin
-      - DJANGO_SUPERUSER_EMAIL=admin@example.com
     depends_on:
       - db
     networks:
       - wagtail_network
 
   db:
+    container_name: weblog_db
     image: postgres:16
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=wagtail
-      - POSTGRES_USER=wagtail
-      - POSTGRES_PASSWORD=wagtail
-    networks:
-      - wagtail_network
-
-  tailwind:
-    build: .
-    working_dir: /app/srcs/theme
-    command: npm run dev
-    volumes:
-      - ./srcs:/app/srcs
-    environment:
-      - NODE_ENV=development
+      - POSTGRES_DB=weblog
+      - POSTGRES_USER=weblog
+      - POSTGRES_PASSWORD=weblog
     networks:
       - wagtail_network
 

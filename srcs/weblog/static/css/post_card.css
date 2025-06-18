@@ -1,0 +1,199 @@
+.post-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 20px;
+  border: 1px solid #000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  width: 100%;
+}
+
+.post-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.post-card__image-container {
+  width: 100%;
+}
+
+.post-card__image-wrapper {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto;
+}
+
+.post-card__image-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.post-card__image {
+  width: 100%;
+  height: 100%;
+  background-color: #f3f4f6;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.post-card__cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post-card__content {
+  width: 100%;
+  text-align: center;
+}
+
+.post-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.post-card__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #111827;
+}
+
+.post-card__title a {
+  position: relative;
+  color: inherit;
+  text-decoration: none;
+}
+
+.post-card__title a:hover {
+  color: #4b5563;
+}
+
+.post-card__link-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.post-card__category {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  background-color: #f3f4f6;
+  border-radius: 9999px;
+}
+
+.post-card__view-count,
+.post-card__like {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.post-card__like-button {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+.post-card__like-button:hover {
+  color: #ef4444;
+}
+
+.post-card__like-button--liked {
+  color: #ef4444;
+}
+
+.post-card__icon--liked {
+  fill: currentColor;
+}
+
+.post-card__date {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.post-card__intro {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #4b5563;
+  margin-bottom: 1rem;
+}
+
+.post-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.post-card__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #1f2937;
+  background-color: #f3f4f6;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.post-card__tag:hover {
+  background-color: #e5e7eb;
+}
+
+/* Grid Layout */
+.blog-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.blog-container h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    justify-content: center;
+}
+
+.no-posts {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #666;
+}
+
+/* Post Card Styles */
+.post-card {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 20px;
+    border: 1px solid #000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    width: 100%;
+} 

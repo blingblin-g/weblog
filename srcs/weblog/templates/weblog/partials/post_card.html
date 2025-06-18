@@ -1,0 +1,286 @@
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+<article class="post-card">
+    <div class="post-card__image-container">
+        <div class="post-card__image-wrapper">
+            <a href="{% pageurl post %}" class="post-card__image-link">
+                <div class="post-card__image">
+                    {% if post.cover_image %}
+                        {% image post.cover_image fill-192x192 as cover_image %}
+                        <img src="{{ cover_image.url }}" alt="{{ post.title }}" class="post-card__cover-image">
+                    {% else %}
+                        <div class="post-card__cover-image"></div>
+                    {% endif %}
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="post-card__content">
+        <div class="post-card__meta">
+            {% if post.category %}
+                <span class="post-card__category">{{ post.category }}</span>
+            {% endif %}
+        </div>
+
+        <h2 class="post-card__title">
+            <a href="{% pageurl post %}">
+                {{ post.title }}
+                <span class="post-card__link-overlay"></span>
+            </a>
+        </h2>
+
+        <div class="post-card__meta">
+            <span class="post-card__view-count">
+                <svg class="post-card__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 10px; height: 10px;">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                {{ post.view_count }}
+            </span>
+            <button class="post-card__like-button {% if post.like_count > 0 %}post-card__like-button--liked{% endif %}" data-post-id="{{ post.id }}">
+                <svg class="post-card__icon {% if post.like_count > 0 %}post-card__icon--liked{% endif %}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 10px; height: 10px;">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                <span class="post-card__like-count">{{ post.like_count }}</span>
+            </button>
+            <span class="post-card__date">{{ post.date|date:"Y.m.d" }}</span>
+        </div>
+
+        {% if post.intro %}
+            <p class="post-card__intro">{{ post.intro }}</p>
+        {% endif %}
+
+        {% if post.tags.all %}
+            <div class="post-card__tags">
+                {% for tag in post.tags.all %}
+                    <a href="{% url 'weblog:tag' tag.slug %}" class="post-card__tag">
+                        #{{ tag.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</article>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.post-card__like-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const pageId = this.dataset.pageId;
+            const isLiked = this.dataset.liked === 'true';
+            const likeCount = this.querySelector('.post-card__like-count');
+            const heartIcon = this.querySelector('svg');
+            
+            fetch(`/weblog/like/${pageId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.dataset.liked = data.is_liked;
+                    likeCount.textContent = data.like_count;
+                    if (data.is_liked) {
+                        heartIcon.classList.add('post-card__icon--liked');
+                        this.classList.add('post-card__like-button--liked');
+                    } else {
+                        heartIcon.classList.remove('post-card__icon--liked');
+                        this.classList.remove('post-card__like-button--liked');
+                    }
+                }
+            });
+        });
+    });
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+<style>
+.post-card {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: white;
+    border-radius: 20px;
+    transition: box-shadow 0.3s ease;
+    width: 100%;
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+.post-card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.post-card__image-container {
+    width: 100%;
+}
+
+.post-card__image-wrapper {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.post-card__image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.post-card__image {
+    width: 100%;
+    height: 100%;
+    background-color: #f3f4f6;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.post-card__cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post-card__content {
+    width: 100%;
+    text-align: center;
+}
+
+.post-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.post-card__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.post-card__title a {
+    position: relative;
+    color: inherit;
+    text-decoration: none;
+}
+
+.post-card__title a:hover {
+    color: #4b5563;
+}
+
+.post-card__link-overlay {
+    position: absolute;
+    inset: 0;
+}
+
+.post-card__category {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    background-color: #f3f4f6;
+    border-radius: 9999px;
+}
+
+.post-card__view-count,
+.post-card__like {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.post-card__like-button {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #9ca3af;
+    transition: color 0.2s ease;
+}
+
+.post-card__like-button:hover {
+    color: #ef4444;
+}
+
+.post-card__like-button--liked {
+    color: #ef4444;
+}
+
+.post-card__icon--liked {
+    fill: currentColor;
+}
+
+.post-card__date {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.post-card__intro {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #4b5563;
+    margin-bottom: 1rem;
+}
+
+.post-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.post-card__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #1f2937;
+    background-color: #f3f4f6;
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.post-card__tag:hover {
+    background-color: #e5e7eb;
+}
+
+/* Grid container for multiple post cards */
+.post-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+</style> 

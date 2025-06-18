@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}#{{ tag.name }} - 태그{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-12">
+    <h1 class="text-3xl font-bold mb-8">#{{ tag.name }}</h1>
+    <div class="grid gap-8">
+        {% for post in posts %}
+            {% include "weblog/partials/post_card.html" with post=post %}
+        {% empty %}
+            <p class="text-center text-gray-600">이 태그로 작성된 글이 없습니다.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

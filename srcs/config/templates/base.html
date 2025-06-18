@@ -1,7 +1,7 @@
 {% load static wagtailcore_tags wagtailuserbar %}
 
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-gray-50">
+<html lang="en">
     <head>
         <meta charset="utf-8" />
         <title>
@@ -24,47 +24,83 @@
         {% endif %}
 
         {# Global stylesheets #}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/config.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 
         {% block extra_css %}
         {# Override this in templates to add extra stylesheets #}
+        <style>
+        .gnb {
+            background: #fff;
+            border-bottom: 1px solid #ececec;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .gnb__container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 1.5rem;
+        }
+        .gnb__logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #222;
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+        .gnb__menu {
+            display: flex;
+            flex-direction: row;
+            gap: 2rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .gnb__menu li a {
+            color: #444;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .gnb__menu li a:hover {
+            background: #f2f2f2;
+            color: #0070f3;
+        }
+        @media (max-width: 700px) {
+            .gnb__container {
+                padding: 0.5rem 0.5rem;
+            }
+            .gnb__menu {
+                gap: 1rem;
+            }
+        }
+        </style>
         {% endblock %}
     </head>
 
-    <body class="h-full">
+    <body>
         {% wagtailuserbar %}
 
-        <div class="min-h-full">
-            <nav class="bg-white shadow-sm">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="flex h-16 justify-between">
-                        <div class="flex">
-                            <div class="flex flex-shrink-0 items-center">
-                                <a href="/" class="text-2xl font-bold text-gray-900">Blog</a>
-                            </div>
-                            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                                <a href="/" class="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900">Home</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+        {% include 'partials/gnb.html' %}
 
-            <main>
-                <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-                    {% block content %}{% endblock %}
-                </div>
-            </main>
+        <main class="main">
+            <div class="container">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
 
-            <footer class="bg-white">
-                <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-                    <div class="border-t border-gray-200 pt-8">
-                        <p class="text-center text-base text-gray-400">&copy; 2024 Your Blog. All rights reserved.</p>
-                    </div>
-                </div>
-            </footer>
-        </div>
+        <footer class="footer">
+            <div class="footer__container">
+                <p>&copy; 2024 Your Blog. All rights reserved.</p>
+            </div>
+        </footer>
 
         {# Global javascript #}
         <script type="text/javascript" src="{% static 'js/config.js' %}"></script>

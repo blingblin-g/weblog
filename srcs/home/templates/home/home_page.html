@@ -1,21 +1,87 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static wagtailcore_tags wagtailimages_tags markdown_extras %}
+
+{% block title %}{{ page.title }}{% endblock %}
 
 {% block body_class %}template-homepage{% endblock %}
 
 {% block extra_css %}
-
 {% comment %}
 Delete the line below if you're just getting started and want to remove the welcome screen!
 {% endcomment %}
 <link rel="stylesheet" href="{% static 'css/welcome_page.css' %}">
+<link rel="stylesheet" href="{% static 'home/css/home_page.css' %}">
 {% endblock extra_css %}
 
 {% block content %}
+<div class="bg-white">
+    {% if page.cover_image %}
+    <div class="relative w-full h-72 sm:h-96 overflow-hidden mb-8">
+        {% image page.cover_image fill-1920x400 class="w-full h-full object-cover" %}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+    </div>
+    {% endif %}
+    <!-- 제목 섹션 -->
+    <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-12">
+        <div class="mx-auto max-w-2xl text-center">
+            <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+                {{ page.title }}
+            </h1>
+            {% if page.intro %}
+            <p class="mt-6 text-lg leading-8 text-gray-600">
+                {{ page.intro|richtext }}
+            </p>
+            {% endif %}
+        </div>
+    </div>
 
-{% comment %}
-Delete the line below if you're just getting started and want to remove the welcome screen!
-{% endcomment %}
-{% include 'home/welcome_page.html' %}
+    <!-- 최신 글 섹션 -->
+    <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-12 bg-gray-50">
+        <div class="mx-auto max-w-5xl">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">최신 글</h2>
+            <div class="grid grid-cols-3 gap-4" style="grid-template-columns: 1fr 1fr 1fr; display: grid;">
+                {% for post in page.get_latest_posts|slice:":3" %}
+                    {% include "weblog/partials/post_card.html" with post=post %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-{% endblock content %}
+    <!-- 블로그 섹션 -->
+    <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-12">
+        <div class="mx-auto max-w-5xl">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">블로그</h2>
+            <div class="grid grid-cols-3 gap-4" style="grid-template-columns: 1fr 1fr 1fr; display: grid;">
+                <!-- 왼쪽: 큰 블로그 인덱스 -->
+                {% with blog_index=page.get_blog_indexes|first %}
+                    {% include "weblog/partials/post_card.html" with post=blog_index %}
+                    {% for post in blog_index.get_children.specific.live|slice:":2" %}
+                        {% include "weblog/partials/post_card.html" with post=post %}
+                    {% endfor %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 본문 섹션 -->
+    {% if page.body %}
+    <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-24 sm:py-32 bg-gray-50">
+        <div class="mx-auto max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
+            <div class="prose prose-lg prose-gray mx-auto">
+                {% for block in page.body %}
+                    {% if block.block_type == 'markdown' %}
+                        {{ block.value|markdown_to_html|safe }}
+                    {% elif block.block_type == 'heading' %}
+                        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{{ block.value }}</h2>
+                    {% elif block.block_type == 'paragraph' %}
+                        {{ block.value|richtext }}
+                    {% elif block.block_type == 'image' %}
+                        {% image block.value width-800 class="rounded-xl shadow-lg" %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

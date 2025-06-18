@@ -1,18 +1,3 @@
 {% for post in posts %}
-    <article class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="p-6">
-            <h2 class="text-xl font-semibold mb-2">
-                <a href="{{ post.url }}" class="text-gray-900 hover:text-blue-600"
-                   hx-get="{{ post.url }}"
-                   hx-target="#content"
-                   hx-push-url="true">
-                    {{ post.title }}
-                </a>
-            </h2>
-            <p class="text-gray-600 mb-4">{{ post.intro }}</p>
-            <div class="text-sm text-gray-500">
-                {{ post.date|date:"F j, Y" }}
-            </div>
-        </div>
-    </article>
+    {% include "weblog/partials/post_card.html" with post=post %}
 {% endfor %} 

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+<div class="relative">
+    {% if page.cover_image %}
+    <div class="relative h-[32rem] overflow-hidden">
+        {% image page.cover_image width-1920 class="w-full h-full object-cover" %}
+        <div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black/80"></div>
+        <div class="absolute inset-0 flex items-center">
+            <div class="mx-auto max-w-7xl px-6 lg:px-8 w-full">
+                <div class="mx-auto max-w-2xl text-center">
+                    <h1 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">{{ page.title }}</h1>
+                    {% if page.intro %}
+                    <p class="mt-6 text-lg leading-8 text-gray-300">{{ page.intro }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-16">
+        <div class="mx-auto max-w-2xl">
+            {% if not page.cover_image %}
+            <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl mb-8">{{ page.title }}</h1>
+            {% if page.intro %}
+            <p class="text-lg leading-8 text-gray-600 mb-12">{{ page.intro }}</p>
+            {% endif %}
+            {% endif %}
+
+            <!-- Categories Section -->
+            <div class="mb-16">
+                <h2 class="text-2xl font-bold text-gray-900 mb-8">Categories</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for category in categories %}
+                    <a href="{% pageurl category %}" class="group">
+                        <div class="relative h-48 overflow-hidden rounded-lg">
+                            {% if category.cover_image %}
+                            {% image category.cover_image fill-400x300 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" %}
+                            {% else %}
+                            <div class="w-full h-full bg-gray-100"></div>
+                            {% endif %}
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6">
+                                <h3 class="text-xl font-semibold text-white mb-2">{{ category.name }}</h3>
+                                <p class="text-gray-200 text-sm">{{ category.description|default:"" }}</p>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Recent Posts Section -->
+            {% if recent_posts %}
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-8">Recent Posts</h2>
+                <div class="grid grid-cols-1 gap-8">
+                    {% for post in recent_posts %}
+                    <div class="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                        {% if post.cover_image %}
+                        <div class="w-full md:w-48 h-32 overflow-hidden rounded-lg">
+                            {% image post.cover_image fill-400x300 class="w-full h-full object-cover" %}
+                        </div>
+                        {% endif %}
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                                <a href="{% pageurl post %}" class="hover:text-blue-600 transition-colors">
+                                    {{ post.title }}
+                                </a>
+                            </h3>
+                            <p class="text-gray-600 mb-4">{{ post.intro|truncatechars:150 }}</p>
+                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                <time datetime="{{ post.first_published_at|date:'Y-m-d' }}">
+                                    {{ post.first_published_at|date:"F j, Y" }}
+                                </time>
+                                {% if post.category %}
+                                <span class="px-3 py-1 bg-gray-100 rounded-full">
+                                    {{ post.category.name }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

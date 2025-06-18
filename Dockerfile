@@ -1,5 +1,5 @@
 # Use an official Python runtime based on Debian 12 "bookworm" as a parent image.
-FROM python:3.12-slim-bookworm
+FROM python:3.11-slim
 
 # Add user that will be used in the container.
 RUN useradd -m wagtail
@@ -13,10 +13,9 @@ EXPOSE 8000
 #    command.
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    NODE_ENV=production \
     PYTHONPATH=/app/srcs
 
-# Install system packages required by Wagtail, Django, and Node.js
+# Install system packages required by Wagtail and Django
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
@@ -24,16 +23,10 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo-dev \
     zlib1g-dev \
     libwebp-dev \
-    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g npm@latest
-
-# Install the application server and uv
-RUN pip install --no-cache-dir gunicorn uv
+# Install the application server
+RUN pip install --no-cache-dir gunicorn
 
 # Use /app folder as a directory where the source code is stored.
 WORKDIR /app
@@ -42,16 +35,9 @@ WORKDIR /app
 COPY . .
 
 # Install Python dependencies
-RUN uv pip install --system .
+RUN pip install --no-cache-dir .
 
-# Install Node.js dependencies and build Tailwind CSS (root 권한)
-WORKDIR /app/srcs/theme
-RUN npm install && npm run build
-
-# Go back to app directory
-WORKDIR /app
-
-# Set this directory to be owned by the "wagtail" user. (빌드 후 소유권 변경)
+# Set this directory to be owned by the "wagtail" user.
 RUN chown -R wagtail:wagtail /app
 
 # Use user "wagtail" to run the server itself.
@@ -62,3 +48,5 @@ RUN python srcs/manage.py collectstatic --noinput
 
 # 스크립트에 실행 권한 부여
 RUN chmod +x /app/srcs/config/db/init.sh
+
+CMD ["python", "srcs/manage.py", "runserver", "0.0.0.0:8000"]

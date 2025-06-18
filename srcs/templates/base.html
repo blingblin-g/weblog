@@ -9,6 +9,7 @@
     <title>{% block title %}{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}{% endblock %}</title>
     <meta name="description" content="{% if page.search_description %}{{ page.search_description }}{% endif %}">
     {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'weblog/css/post_card.css' %}">
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">

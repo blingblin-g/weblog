@@ -1,24 +1,195 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load static wagtailcore_tags wagtailimages_tags %}
 
 {% block title %}블로그{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto py-12">
-    <h1 class="text-3xl font-bold mb-8">블로그</h1>
-    {% for post in page.get_children.specific.live %}
-        <div class="mb-8 p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
-            <a href="{{ post.url }}">
-                {% if post.cover_image %}
-                    {% image post.cover_image fill-800x400 class="w-full h-48 object-cover rounded-lg mb-4" %}
-                {% endif %}
-                <h2 class="text-2xl font-semibold mb-2">{{ post.title }}</h2>
-                <p class="text-gray-500 text-sm mb-2">{{ post.date|date:"Y년 n월 j일" }}</p>
-                <p class="text-gray-700">{{ post.intro }}</p>
-            </a>
+<style>
+    .cover-container {
+        position: relative;
+        height: 32rem;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    .cover-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.3);
+        transition: all 0.7s ease-in-out;
+    }
+    .cover-container:hover .cover-image {
+        transform: scale(1.1);
+        filter: brightness(0.5);
+    }
+    .cover-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.4));
+        transition: all 0.7s ease-in-out;
+    }
+    .cover-container:hover .cover-overlay {
+        background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
+    }
+    .cover-center-content {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        text-align: center;
+        padding: 2rem;
+    }
+    .cover-title {
+        color: #fff;
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        max-width: 800px;
+    }
+    .cover-meta {
+        display: flex;
+        gap: 1rem;
+        color: #fff;
+        font-size: 1.1rem;
+        align-items: center;
+        justify-content: center;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .meta-separator {
+        color: rgba(255, 255, 255, 0.6);
+    }
+    .cover-category {
+        background: rgba(255,255,255,0.2);
+        border-radius: 999px;
+        padding: 0.25em 1em;
+        margin-bottom: 1rem;
+    }
+    .cover-tags {
+        margin-top: 0.75rem;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .cover-tag {
+        color: #fff;
+        background: rgba(0,0,0,0.15);
+        border-radius: 999px;
+        padding: 0.15em 0.8em;
+        font-size: 0.95em;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+    .modal.active {
+        display: flex;
+        opacity: 1;
+    }
+    .modal-content {
+        max-width: 90%;
+        max-height: 90vh;
+        margin: auto;
+        position: relative;
+    }
+    .modal-image {
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+    }
+    .modal-close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        color: white;
+        font-size: 30px;
+        cursor: pointer;
+        padding: 5px;
+    }
+</style>
+
+<div class="bg-white">
+    {% if page.cover_image %}
+    <div class="cover-container" onclick="openModal()">
+        {% image page.cover_image width-1920 class="cover-image" %}
+        <div class="cover-overlay"></div>
+        <div class="cover-center-content">
+            <h1 class="cover-title">{{ page.title }}</h1>
+            {% if page.intro %}
+            <p class="cover-meta">{{ page.intro }}</p>
+            {% endif %}
         </div>
-    {% empty %}
-        <p>아직 작성된 글이 없습니다.</p>
-    {% endfor %}
+    </div>
+
+    <!-- Modal -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            {% image page.cover_image original class="modal-image" %}
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('imageModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+    {% endif %}
+
+    <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-16">
+        <div class="mx-auto max-w-2xl mb-24">
+            {% if not page.cover_image %}
+            <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl mb-8">{{ page.title }}</h1>
+            {% if page.intro %}
+            <p class="text-lg leading-8 text-gray-600 mb-12">{{ page.intro }}</p>
+            {% endif %}
+            {% endif %}
+
+            <div class="prose prose-lg max-w-none">
+                {{ page.body|richtext }}
+            </div>
+        </div>
+
+        <hr class="my-16 border-gray-200">
+
+        {% if blogpages %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for post in blogpages %}
+                {% include "weblog/partials/post_card.html" with post=post %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %} 
