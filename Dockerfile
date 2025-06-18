@@ -2,7 +2,7 @@
 FROM python:3.12-slim-bookworm
 
 # Add user that will be used in the container.
-RUN useradd wagtail
+RUN useradd -m wagtail
 
 # Port used by this container to serve HTTP.
 EXPOSE 8000
@@ -12,49 +12,53 @@ EXPOSE 8000
 # 2. Set PORT variable that is used by Gunicorn. This should match "EXPOSE"
 #    command.
 ENV PYTHONUNBUFFERED=1 \
-    PORT=8000
+    PYTHONDONTWRITEBYTECODE=1 \
+    NODE_ENV=production \
+    PYTHONPATH=/app/srcs
 
-# Install system packages required by Wagtail and Django.
-RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
+# Install system packages required by Wagtail, Django, and Node.js
+RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     libmariadb-dev \
     libjpeg62-turbo-dev \
     zlib1g-dev \
     libwebp-dev \
- && rm -rf /var/lib/apt/lists/*
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install the application server.
-RUN pip install "gunicorn==20.0.4"
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest
 
-# Install the project requirements.
-COPY requirements.txt /
-RUN pip install -r /requirements.txt
+# Install the application server and uv
+RUN pip install --no-cache-dir gunicorn uv
 
 # Use /app folder as a directory where the source code is stored.
 WORKDIR /app
 
-# Set this directory to be owned by the "wagtail" user. This Wagtail project
-# uses SQLite, the folder needs to be owned by the user that
-# will be writing to the database file.
-RUN chown wagtail:wagtail /app
+# Copy project files
+COPY . .
 
-# Copy the source code of the project into the container.
-COPY --chown=wagtail:wagtail . .
+# Install Python dependencies
+RUN uv pip install --system .
 
-# Use user "wagtail" to run the build commands below and the server itself.
+# Install Node.js dependencies and build Tailwind CSS (root 권한)
+WORKDIR /app/srcs/theme
+RUN npm install && npm run build
+
+# Go back to app directory
+WORKDIR /app
+
+# Set this directory to be owned by the "wagtail" user. (빌드 후 소유권 변경)
+RUN chown -R wagtail:wagtail /app
+
+# Use user "wagtail" to run the server itself.
 USER wagtail
 
 # Collect static files.
-RUN python manage.py collectstatic --noinput --clear
+RUN python srcs/manage.py collectstatic --noinput
 
-# Runtime command that executes when "docker run" is called, it does the
-# following:
-#   1. Migrate the database.
-#   2. Start the application server.
-# WARNING:
-#   Migrating database at the same time as starting the server IS NOT THE BEST
-#   PRACTICE. The database should be migrated manually or using the release
-#   phase facilities of your hosting platform. This is used only so the
-#   Wagtail instance can be started with a simple "docker run" command.
-CMD set -xe; python manage.py migrate --noinput; gunicorn config.wsgi:application
+# 스크립트에 실행 권한 부여
+RUN chmod +x /app/srcs/config/db/init.sh

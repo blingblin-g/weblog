@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags markdown_extras %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+<div class="bg-white">
+    {% if page.cover_image %}
+    <div class="relative h-96 overflow-hidden">
+        {% image page.cover_image fill-1920x1080 class="w-full h-full object-cover" style="filter: brightness(0.3);" %}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/40"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center max-w-3xl mx-auto px-4">
+                <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl mb-16">
+                    {{ page.title }}
+                </h1>
+                <time datetime="{{ page.date|date:'Y-m-d' }}" class="text-sm text-white">
+                    {{ page.date|date:"Y. m. d. (D)" }}
+                </time>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl">
+            <div class="text-center">
+                <h1 class="mt-8 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                    {{ page.title }}
+                </h1>
+                <div class="mt-16 flex items-center justify-center gap-x-4 text-sm">
+                    <time datetime="{{ page.date|date:'Y-m-d' }}" class="text-gray-500">
+                        {{ page.date|date:"Y. m. d. (D)" }}
+                    </time>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <article class="relative mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl">
+            <hr class="my-12 border-gray-200">
+            <p class="mt-8 text-lg leading-8 text-gray-600">
+                {{ page.intro }}
+            </p>
+            <div class="mt-12 max-w-2xl prose prose-lg prose-gray prose-img:rounded-xl prose-img:shadow-lg">
+                {% for block in page.body %}
+                    {% if block.block_type == 'paragraph' %}
+                        {{ block.value|richtext }}
+                    {% elif block.block_type == 'image' %}
+                        {% image block.value width-800 class="rounded-xl shadow-lg" %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </article>
+</div>
+{% endblock %} 

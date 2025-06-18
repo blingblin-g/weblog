@@ -9,14 +9,12 @@ from wagtail.documents import urls as wagtaildocs_urls
 from search import views as search_views
 from weblog import views as weblog_views
 
-app_name = 'weblog'
-
 urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("search/", search_views.search, name="search"),
-    path("blog/", include("weblog.weblog.urls")),  # 앱의 urls.py를 include
+    path("weblog/", include("weblog.urls")),  # /blog/를 /weblog/로 변경
 ]
 
 if settings.DEBUG:
@@ -24,9 +22,4 @@ if settings.DEBUG:
 
 urlpatterns += [
     path("", include(wagtail_urls)),
-]
-
-urlpatterns += [
-    path('', weblog_views.blog_post_list, name='blog_post_list'),
-    path('<slug:slug>/', weblog_views.blog_post_detail, name='blog_post_detail'),
 ]

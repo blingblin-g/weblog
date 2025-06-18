@@ -1,0 +1,20 @@
+[project]
+name = "weblog"
+version = "0.1.0"
+description = "A Wagtail blog project"
+requires-python = ">=3.12"
+dependencies = [
+    "Django>=5.2,<5.3",
+    "wagtail>=7.0,<7.1",
+    "django-tailwind",
+    "markdown",
+    "Pygments",
+    "django-htmx",
+]
+
+[tool.setuptools]
+packages = ["srcs.config", "srcs.weblog"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build" 
