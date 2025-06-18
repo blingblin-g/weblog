@@ -48,7 +48,7 @@
         </div>
 
         {% if post.intro %}
-            <p class="post-card__intro">{{ post.intro }}</p>
+            <p class="post-card__intro">{{ post.intro|striptags }}</p>
         {% endif %}
 
         {% if post.tags.all %}
