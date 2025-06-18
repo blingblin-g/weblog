@@ -1,0 +1,97 @@
+.bg-white {
+    background-color: white;
+}
+
+.cover-image-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cover-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+}
+
+.title-section {
+    position: relative;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+.title-content {
+    max-width: 42rem;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.main-title {
+    font-size: 3.75rem;
+    font-weight: bold;
+    color: #111827;
+}
+
+.intro-text {
+    margin-top: 1.5rem;
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: #4b5563;
+}
+
+.latest-posts-section,
+.blog-section {
+    position: relative;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+.latest-posts-section {
+    background-color: #f9fafb;
+}
+
+.section-container {
+    max-width: 64rem;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 2.25rem;
+    font-weight: bold;
+    color: #111827;
+    margin-bottom: 2rem;
+}
+
+.body-section {
+    position: relative;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 6rem 1.5rem;
+    background-color: #f9fafb;
+}
+
+.content-wrapper {
+    max-width: 42rem;
+    margin: 0 auto;
+}
+
+.content-heading {
+    font-size: 2.25rem;
+    font-weight: bold;
+    color: #111827;
+}
+
+.content-image {
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+} 

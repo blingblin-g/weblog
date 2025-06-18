@@ -16,19 +16,19 @@ Delete the line below if you're just getting started and want to remove the welc
 {% block content %}
 <div class="bg-white">
     {% if page.cover_image %}
-    <div class="relative w-full h-72 sm:h-96 overflow-hidden mb-8">
-        {% image page.cover_image fill-1920x400 class="w-full h-full object-cover" %}
-        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+    <div class="cover-image-container">
+        {% image page.cover_image fill-1920x400 class="cover-image" %}
+        <div class="cover-image-overlay"></div>
     </div>
     {% endif %}
     <!-- 제목 섹션 -->
-    <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-12">
-        <div class="mx-auto max-w-2xl text-center">
-            <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+    <div class="title-section">
+        <div class="title-content">
+            <h1 class="main-title">
                 {{ page.title }}
             </h1>
             {% if page.intro %}
-            <p class="mt-6 text-lg leading-8 text-gray-600">
+            <p class="intro-text">
                 {{ page.intro|richtext }}
             </p>
             {% endif %}
@@ -36,9 +36,9 @@ Delete the line below if you're just getting started and want to remove the welc
     </div>
 
     <!-- 최신 글 섹션 -->
-    <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-12 bg-gray-50">
-        <div class="mx-auto max-w-5xl">
-            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">최신 글</h2>
+    <div class="latest-posts-section">
+        <div class="section-container">
+            <h2 class="section-title">Latest</h2>
             <div class="grid grid-cols-3 gap-4" style="grid-template-columns: 1fr 1fr 1fr; display: grid;">
                 {% for post in page.get_latest_posts|slice:":3" %}
                     {% include "weblog/partials/post_card.html" with post=post %}
@@ -48,9 +48,9 @@ Delete the line below if you're just getting started and want to remove the welc
     </div>
 
     <!-- 블로그 섹션 -->
-    <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-12">
-        <div class="mx-auto max-w-5xl">
-            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">블로그</h2>
+    <div class="blog-section">
+        <div class="section-container">
+            <h2 class="section-title">Series</h2>
             <div class="grid grid-cols-3 gap-4" style="grid-template-columns: 1fr 1fr 1fr; display: grid;">
                 <!-- 왼쪽: 큰 블로그 인덱스 -->
                 {% with blog_index=page.get_blog_indexes|first %}
@@ -65,18 +65,18 @@ Delete the line below if you're just getting started and want to remove the welc
 
     <!-- 본문 섹션 -->
     {% if page.body %}
-    <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-24 sm:py-32 bg-gray-50">
-        <div class="mx-auto max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-            <div class="prose prose-lg prose-gray mx-auto">
+    <div class="body-section">
+        <div class="section-container">
+            <div class="content-wrapper">
                 {% for block in page.body %}
                     {% if block.block_type == 'markdown' %}
                         {{ block.value|markdown_to_html|safe }}
                     {% elif block.block_type == 'heading' %}
-                        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{{ block.value }}</h2>
+                        <h2 class="content-heading">{{ block.value }}</h2>
                     {% elif block.block_type == 'paragraph' %}
                         {{ block.value|richtext }}
                     {% elif block.block_type == 'image' %}
-                        {% image block.value width-800 class="rounded-xl shadow-lg" %}
+                        {% image block.value width-800 class="content-image" %}
                     {% endif %}
                 {% endfor %}
             </div>
