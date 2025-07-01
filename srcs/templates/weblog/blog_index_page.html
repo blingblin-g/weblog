@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/weblog/blog_page.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="cover-container">
+    {% if page.cover_image %}
+        {% image page.cover_image original as cover_image %}
+        <div class="cover-image" style="background-image: url('{{ cover_image.url }}');">
+            <div class="cover-overlay"></div>
+            <div class="cover-center-content">
+                <h1 class="cover-title">{{ page.title }}</h1>
+                {% if page.intro %}
+                    <p class="cover-intro">{{ page.intro|striptags }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<div class="blog-content">
+    <div class="post-cards-grid">
+        {% for post in blogpages %}
+            {% include "weblog/partials/post_card.html" with post=post %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

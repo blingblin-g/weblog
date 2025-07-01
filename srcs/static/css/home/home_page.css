@@ -61,8 +61,9 @@
 }
 
 .section-container {
-    max-width: 64rem;
+    max-width: 1200px;
     margin: 0 auto;
+    text-align: center;
 }
 
 .section-title {
@@ -70,6 +71,28 @@
     font-weight: bold;
     color: #111827;
     margin-bottom: 2rem;
+    text-align: center;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 반응형 스타일 추가 */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 400px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .body-section {

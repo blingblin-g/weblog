@@ -6,34 +6,22 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python srcs/manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python srcs/manage.py migrate &&
+             python srcs/manage.py collectstatic --noinput &&
+             python srcs/manage.py runserver 0.0.0.0:80"
     volumes:
       - .:/app
       - static_volume:/app/static
       - media_volume:/app/media
     ports:
-      - "8000:8000"
+      - "80:80"
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.dev
-    depends_on:
-      - db
-    networks:
-      - wagtail_network
-
-  db:
-    container_name: weblog_db
-    image: postgres:16
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=weblog
-      - POSTGRES_USER=weblog
-      - POSTGRES_PASSWORD=weblog
     networks:
       - wagtail_network
 
 volumes:
-  postgres_data:
   static_volume:
   media_volume:
 

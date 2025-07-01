@@ -56,7 +56,7 @@ class BlogIndexPage(Page):
 
 class BlogPage(Page):
     date = models.DateField("Post date", default=timezone.now)
-    intro = models.CharField(max_length=250)
+    intro = RichTextField(blank=True)
     cover_image = models.ForeignKey(
         'wagtailimages.Image',
         null=True, blank=True,
@@ -110,34 +110,4 @@ class BlogPage(Page):
             self.like_count += 1
             is_liked = True
         self.save()
-        return is_liked
-
-class HomePage(Page):
-    cover_image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
-    intro = models.TextField(blank=True)
-
-    page_ptr = models.OneToOneField(
-        Page, on_delete=models.CASCADE, parent_link=True, related_name='weblog_homepage'
-    )
-
-    content_panels = Page.content_panels + [
-        FieldPanel('cover_image'),
-        FieldPanel('intro'),
-    ]
-
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        
-        # Get all categories
-        context['categories'] = Category.objects.all()
-        
-        # Get recent posts
-        context['recent_posts'] = BlogPage.objects.live().order_by('-first_published_at')[:5]
-        
-        return context 
+        return is_liked 

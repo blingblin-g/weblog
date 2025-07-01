@@ -3,48 +3,54 @@
   isolation: isolate;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem;
+  gap: 1rem;
   background-color: white;
-  border-radius: 20px;
-  border: 1px solid #000;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
-  width: 100%;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  width: 90%;
+  margin: 0 auto;
 }
 
 .post-card:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
 }
 
 .post-card__image-container {
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .post-card__image-wrapper {
-  width: 160px;
-  height: 160px;
-  margin: 0 auto;
-}
-
-.post-card__image-link {
-  display: block;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 16/9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .post-card__image {
   width: 100%;
   height: 100%;
   background-color: #f3f4f6;
-  border-radius: 1rem;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px 10px 0 0;
 }
 
 .post-card__cover-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  background-color: #f3f4f6;
+  border-radius: 10px 10px 0 0;
 }
 
 .post-card__content {
@@ -171,8 +177,9 @@
 
 .blog-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 2rem;
+    width: 100%;
     justify-content: center;
 }
 
@@ -182,18 +189,19 @@
     color: #666;
 }
 
-/* Post Card Styles */
-.post-card {
-    position: relative;
-    isolation: isolate;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 1rem;
-    background-color: white;
-    border-radius: 20px;
-    border: 1px solid #000;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
-    width: 100%;
+@media (max-width: 1024px) {
+    .blog-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .blog-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .post-card {
+        width: 95%;
+    }
 } 
