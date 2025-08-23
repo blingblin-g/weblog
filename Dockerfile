@@ -38,7 +38,8 @@ RUN pip install --no-cache-dir .
 
 # Create necessary directories and set permissions
 RUN mkdir -p /app/data /app/static /app/media && \
-    chown -R wagtail:wagtail /app
+    chown -R wagtail:wagtail /app && \
+    chmod 777 /app/data /app/static /app/media
 
 # Use user "wagtail" to run the server itself.
 USER wagtail

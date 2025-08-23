@@ -90,8 +90,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 # SQLite 파일을 Docker 볼륨에 저장하도록 설정
 if os.environ.get("DOCKER_ENV"):
     DATABASE_PATH = "/app/data/db.sqlite3"
+    STATIC_ROOT = "/app/staticfiles"
+    MEDIA_ROOT = "/app/media"
 else:
     DATABASE_PATH = os.path.join(BASE_DIR, "db.sqlite3")
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DATABASES = {
     "default": {
@@ -144,10 +148,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
-
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
 # Default storage settings, with the staticfiles storage updated.
