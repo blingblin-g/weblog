@@ -36,8 +36,9 @@ COPY . .
 # Install Python dependencies
 RUN pip install --no-cache-dir .
 
-# Set this directory to be owned by the "wagtail" user.
-RUN chown -R wagtail:wagtail /app
+# Create necessary directories and set permissions
+RUN mkdir -p /app/srcs/db /app/static /app/media && \
+    chown -R wagtail:wagtail /app
 
 # Use user "wagtail" to run the server itself.
 USER wagtail

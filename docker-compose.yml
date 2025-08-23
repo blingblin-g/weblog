@@ -11,9 +11,10 @@ services:
              python srcs/manage.py collectstatic --noinput &&
              python srcs/manage.py runserver 0.0.0.0:80"
     volumes:
-      - .:/app
+      - ./srcs:/app/srcs
       - static_volume:/app/static
       - media_volume:/app/media
+      - db_volume:/app/db
     ports:
       - "80:80"
     environment:
@@ -24,6 +25,7 @@ services:
 volumes:
   static_volume:
   media_volume:
+  db_volume:
 
 networks:
   wagtail_network:
