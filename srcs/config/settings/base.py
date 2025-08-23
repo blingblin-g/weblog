@@ -15,7 +15,6 @@ import os
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
-DB_DIR = os.path.join(BASE_DIR, "db")
 
 
 # Quick-start development settings - unsuitable for production
@@ -88,10 +87,16 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# SQLite 파일을 Docker 볼륨에 저장하도록 설정
+if os.environ.get("DOCKER_ENV"):
+    DATABASE_PATH = "/app/data/db.sqlite3"
+else:
+    DATABASE_PATH = os.path.join(BASE_DIR, "db.sqlite3")
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(DB_DIR, "db.sqlite3"),
+        "NAME": DATABASE_PATH,
     }
 }
 

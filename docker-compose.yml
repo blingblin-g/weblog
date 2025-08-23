@@ -14,18 +14,19 @@ services:
       - ./srcs:/app/srcs
       - static_volume:/app/static
       - media_volume:/app/media
-      - db_volume:/app/db
+      - sqlite_data:/app/data
     ports:
       - "80:80"
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.dev
+      - DOCKER_ENV=true
     networks:
       - wagtail_network
 
 volumes:
   static_volume:
   media_volume:
-  db_volume:
+  sqlite_data:
 
 networks:
   wagtail_network:

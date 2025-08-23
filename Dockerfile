@@ -37,7 +37,7 @@ COPY . .
 RUN pip install --no-cache-dir .
 
 # Create necessary directories and set permissions
-RUN mkdir -p /app/srcs/db /app/static /app/media && \
+RUN mkdir -p /app/data /app/static /app/media && \
     chown -R wagtail:wagtail /app
 
 # Use user "wagtail" to run the server itself.
