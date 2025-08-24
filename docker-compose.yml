@@ -17,8 +17,9 @@ services:
       - ./data:/app/data
     ports:
       - "80:80"
+    env_file:
+      - .env
     environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.dev
       - DOCKER_ENV=true
     networks:
       - wagtail_network
