@@ -12,7 +12,7 @@
                         {% image post.cover_image fill-400x300 as cover_image %}
                         <img src="{{ cover_image.url }}" alt="{{ post.title }}" class="post-card__cover-image">
                     {% else %}
-                        <div class="post-card__cover-image"></div>
+                        <img src="{% static 'images/default-cover.svg' %}" alt="{{ post.title }}" class="post-card__cover-image">
                     {% endif %}
                 </div>
             </a>

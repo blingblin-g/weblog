@@ -19,6 +19,11 @@ Delete the line below if you're just getting started and want to remove the welc
         {% image page.cover_image fill-1920x400 class="cover-image" %}
         <div class="cover-image-overlay"></div>
     </div>
+    {% else %}
+    <div class="cover-image-container">
+        <img src="{% static 'images/default-cover.svg' %}" class="cover-image" alt="Default cover">
+        <div class="cover-image-overlay"></div>
+    </div>
     {% endif %}
     <!-- 제목 섹션 -->
     <div class="title-section">
